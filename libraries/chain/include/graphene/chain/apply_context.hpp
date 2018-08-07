@@ -200,8 +200,10 @@ class apply_context {
             {
                // FC_ASSERT( payer != account_name(), "must specify a valid account to pay for new record" );
 
+               dlog("scope=${s}, table=${t}, payer=${p}, id=${i}", ("s", scope)("t", table)("p", payer)("i", id));
                auto &tab = const_cast<table_id_object&>(context.find_or_create_table(context.receiver, scope, table, payer));
 
+               //TODO FIXME secondary index item can not created by db.create
                const auto &obj = context._db->create<ObjectType>([&](auto &o) {
                    o.t_id = tab.id;
                    o.primary_key = id;
@@ -544,6 +546,7 @@ class apply_context {
       template<typename T>
       void console_append(T val) {
           _pending_console_output << val;
+          dlog("contract exception info : ${x}", ("x", _pending_console_output.str()));
       }
 
       template<typename T, typename ...Ts>
