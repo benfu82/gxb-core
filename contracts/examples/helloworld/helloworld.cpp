@@ -5,10 +5,10 @@
 
 using namespace graphene;
 
-class skeleton : public contract
+class helloworld : public contract
 {
   public:
-    skeleton(uint64_t id)
+    helloworld(uint64_t id)
         : contract(id)
     {
     }
@@ -22,4 +22,4 @@ class skeleton : public contract
     }
 };
 
-GRAPHENE_ABI(skeleton, (hi))
+GRAPHENE_ABI(helloworld, (hi))
