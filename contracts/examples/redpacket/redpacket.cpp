@@ -39,7 +39,7 @@ class redpacket : public contract
         int64_t block_num = get_head_block_num();
         vector<int> shares;
         int64_t shares_sum = 0;
-        
+
         std::string random_str = pubkey + std::to_string(number) + std::to_string(block_num);
         checksum160 sum160;
         ripemd160(const_cast<char *>(random_str.c_str()), random_str.length(), &sum160);
@@ -67,7 +67,7 @@ class redpacket : public contract
     }
 
     // @abi action
-    void open(std::string issuer, signature sig, uint64_t timestamp)
+    void open(std::string issuer, signature sig)
     {
         uint64_t sender = get_trx_sender();
         int64_t now = get_head_block_time();
@@ -81,7 +81,7 @@ class redpacket : public contract
         graphene_assert(packet_iter != packets.end(), "no redpacket");
 
         // check signature
-        std::string s = std::to_string(timestamp);
+        std::string s = std::to_string(sender);
         int ret = verify_signature(s.c_str(), s.length(), &sig, packet_iter->pub_key.c_str(), packet_iter->pub_key.length());
         graphene_assert(ret == 1, "signature not valid");
 
@@ -100,7 +100,7 @@ class redpacket : public contract
         }
 
         // update records
-        uint64_t current_idx = timestamp % packet_iter->subpackets.size();
+        uint64_t current_idx = sender % packet_iter->subpackets.size();
         int64_t current_amount = packet_iter->subpackets[current_idx];
         records.modify(record_iter, sender, [&](auto &o) {
             o.packet_issuer = issuer_id;

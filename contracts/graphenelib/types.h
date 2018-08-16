@@ -27,7 +27,7 @@ typedef uint16_t weight_type;
 #define ALIGNED(X) __attribute__ ((aligned (16))) X
 
 struct public_key {
-   char data[34];
+   char data[33];
 };
 
 struct signature {
@@ -46,8 +46,8 @@ struct ALIGNED(checksum512) {
    uint8_t hash[64];
 };
 
-typedef struct checksum256 transaction_id_type;
-typedef struct checksum256 block_id_type;
+typedef struct checksum256      transaction_id_type;
+typedef struct checksum256      block_id_type;
 
 #ifdef __cplusplus
 } /// extern "C"

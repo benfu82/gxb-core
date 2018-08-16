@@ -179,6 +179,21 @@ const uint8_t table_id_object::type_id;
 const uint8_t key_value_object::space_id;
 const uint8_t key_value_object::type_id;
 
+// const uint8_t template index64_object::space_id;
+// const uint8_t template index64_object::type_id;
+
+// const uint8_t index128_object::space_id;
+// const uint8_t index128_object::type_id;
+//
+// const uint8_t index256_object::space_id;
+// const uint8_t index256_object::type_id;
+//
+// const uint8_t index_double_object::space_id;
+// const uint8_t index_double_object::type_id;
+//
+// const uint8_t index_long_double_object::space_id;
+// const uint8_t index_long_double_object::type_id;
+
 void database::initialize_evaluators()
 {
    _operation_evaluators.resize(255);
@@ -319,7 +334,7 @@ void database::initialize_indexes()
    // contract object indexes
    add_index< primary_index< table_id_multi_index> >();
    add_index< primary_index< key_value_index> >();
-   // add_index< primary_index< index64_index> >();
+   add_index< primary_index< index64_index> >();
    // add_index< primary_index< index128_index> >();
    // add_index< primary_index< index256_index> >();
    // add_index< primary_index< index_double_index> >();
