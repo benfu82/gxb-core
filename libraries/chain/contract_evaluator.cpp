@@ -38,7 +38,9 @@ namespace graphene { namespace chain {
 contract_receipt contract_call_evaluator::contract_exec(database& db, const contract_call_operation& op, uint32_t billed_cpu_time_us)
 {
     auto cpu_param = db.get_cpu_limit();
-    transaction_context trx_context(db, op.fee_payer().instance, cpu_param.trx_cpu_limit);
+
+    fc::microseconds max_trx_cpu_us = (billed_cpu_time_us == 0) ? fc::microseconds(cpu_param.trx_cpu_limit) : fc::days(1);
+    transaction_context trx_context(db, op.fee_payer().instance, max_trx_cpu_us);
     action act{op.contract_id, op.method_name, op.data};
     apply_context ctx{db, trx_context, act, op.amount};
     ctx.exec();
@@ -80,6 +82,11 @@ void_result contract_deploy_evaluator::do_evaluate(const contract_deploy_operati
     FC_ASSERT(op.code.size() > 0, "contract code cannot be empty");
     FC_ASSERT(op.abi.actions.size() > 0, "contract has no actions");
 
+    // validate wasm code
+    if (d.head_block_time() > HARDFORK_516_TIME) {
+        wasm_interface::validate(op.code);
+    }
+
     return void_result();
 } FC_CAPTURE_AND_RETHROW( (op) ) }
 
@@ -120,7 +127,6 @@ void_result contract_call_evaluator::do_evaluate(const contract_call_operation &
         // check method_name, must be payable
         FC_ASSERT(iter->payable, "method_name ${m} not payable", ("m", op.method_name));
     }
-
 
     // check balance
     if (op.amount.valid()) {
